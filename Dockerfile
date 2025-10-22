@@ -1,21 +1,23 @@
-FROM alpine:3.20
+FROM node:24-alpine
 
-ARG NODE_MAJOR=22
+# Keep Python tooling isolated from system packages (PEP 668 compliant)
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1 \
-    UV_SYSTEM_PYTHON=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PATH="/root/.local/bin:${PATH}"
 
-# Multi-arch compatible: install Node.js, Python, pip, git; then python mcp-proxy and node tsx
+# Multi-arch compatible: install Python + pipx, git, tini; then install tsx and mcp-proxy
 RUN set -eux; \
-    apk add --no-cache \
-      nodejs npm python3 py3-pip git bash tini ca-certificates; \
+    apk add --no-cache python3 py3-pip git bash tini ca-certificates; \
     npm i -g --omit=dev tsx; \
-    python3 -m pip install --no-cache-dir --upgrade pip; \
-    python3 -m pip install --no-cache-dir mcp-proxy;
+    python3 -m venv /opt/mcp; \
+    . /opt/mcp/bin/activate; \
+    pip install --no-cache-dir --upgrade pip; \
+    pip install --no-cache-dir mcp-proxy; \
+    ln -s /opt/mcp/bin/mcp-proxy /usr/local/bin/mcp-proxy;
 
-# Use tini for proper signal handling (PID 1)
+# Use tini for proper signal handling (PID 1) and run mcp-proxy (entrypoint provided by pipx)
 ENTRYPOINT ["/sbin/tini","--","mcp-proxy"]
 
 # Default to SSE on 3000; helm chart passes args; left here as documentation
