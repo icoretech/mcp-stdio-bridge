@@ -1,4 +1,4 @@
-FROM node:24-alpine
+FROM node:25-alpine
 
 # Keep Python tooling isolated from system packages (PEP 668 compliant)
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
