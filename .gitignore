@@ -1,0 +1,11 @@
+# general
+.dockerignore
+.DS_Store
+
+# node
+node_modules
+
+# python
+__pycache__
+*.pyc
+
