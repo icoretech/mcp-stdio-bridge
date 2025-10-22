@@ -7,14 +7,16 @@ ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PYTHONUNBUFFERED=1 \
     PATH="/root/.local/bin:${PATH}"
 
-# Multi-arch compatible: install Python + pipx, git, tini; then install tsx and mcp-proxy
+# Multi-arch compatible: install Python + git + tini; then install tsx and mcp-proxy (versioned)
+ARG MCP_PROXY_VERSION="0.9.0"
+COPY requirements.txt /tmp/requirements.txt
 RUN set -eux; \
     apk add --no-cache python3 py3-pip git bash tini ca-certificates; \
     npm i -g --omit=dev tsx; \
     python3 -m venv /opt/mcp; \
     . /opt/mcp/bin/activate; \
     pip install --no-cache-dir --upgrade pip; \
-    pip install --no-cache-dir mcp-proxy; \
+    pip install --no-cache-dir -r /tmp/requirements.txt; \
     ln -s /opt/mcp/bin/mcp-proxy /usr/local/bin/mcp-proxy;
 
 # Use tini for proper signal handling (PID 1) and run mcp-proxy (entrypoint provided by pipx)
