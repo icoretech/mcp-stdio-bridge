@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/icoretech/mcp-stdio-bridge/compare/v0.3.0...v0.3.1) (2025-10-23)
+
+
+### Bug Fixes
+
+* make uvx wrapper call uv tool run for stdio tools ([d10dfb1](https://github.com/icoretech/mcp-stdio-bridge/commit/d10dfb137dfbc524b40049578b9b44fc00e07342))
+
 ## [0.3.0](https://github.com/icoretech/mcp-stdio-bridge/compare/v0.2.0...v0.3.0) (2025-10-23)
 
 
