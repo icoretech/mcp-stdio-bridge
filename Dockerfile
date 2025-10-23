@@ -26,7 +26,9 @@ RUN set -eux; \
     if [ -f /opt/uvtmp/uv ]; then mv /opt/uvtmp/uv /usr/local/bin/uv; \
     else f=$(find /opt/uvtmp -type f -name uv | head -n1); [ -n "$f" ] && mv "$f" /usr/local/bin/uv; fi; \
     chmod +x /usr/local/bin/uv; \
-    ln -sf /usr/local/bin/uv /usr/local/bin/uvx; \
+    # Provide a uvx wrapper that forwards to 'uv tool run' for ergonomic usage
+    printf '%s\n' '#!/bin/sh' 'exec /usr/local/bin/uv tool run "$@"' > /usr/local/bin/uvx; \
+    chmod +x /usr/local/bin/uvx; \
     rm -rf /opt/uvtmp /tmp/uv.tar.gz; \
     python3 -m venv /opt/mcp; \
     . /opt/mcp/bin/activate; \
