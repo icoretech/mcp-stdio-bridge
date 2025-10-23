@@ -29,5 +29,12 @@ jobs:
 
       - name: Smoke test runtime (uvx/node/python)
         run: |
-          docker run --rm --entrypoint sh mcp-stdio-bridge:ci -lc \
-            'uv --version && uvx --version && node -v && python3 -V && mcp-proxy --help >/dev/null'
+          docker run --rm --entrypoint sh mcp-stdio-bridge:ci -lc '
+            set -e
+            uv --version
+            which uvx
+            uvx --help >/dev/null
+            node -v
+            python3 -V
+            mcp-proxy --help >/dev/null
+          '
